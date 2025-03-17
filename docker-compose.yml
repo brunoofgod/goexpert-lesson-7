@@ -1,0 +1,21 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: rate_limiter_redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  app:
+    build: .
+    container_name: rate_limiter_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_ADDR=redis:6379
+      - CUSTOM_TOKEN_REQUESTS=5ae67c14-c5f2-4ced-b96b-8c1630e1c5e6
+      - CUSTOM_TOKEN_REQUESTS_VALUE=20
+      - LIMIT_PER_SECOND=10
+      - BLOCK_DURATION_PER_SECOND=5
